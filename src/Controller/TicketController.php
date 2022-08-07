@@ -7,11 +7,9 @@ use App\Feature\Ticket\Action\ChangeSeatAction;
 use App\Feature\Ticket\Action\CreateAction;
 use App\Feature\Ticket\DTO\ChangeSeatRequest;
 use App\Feature\Ticket\DTO\CreateRequest;
-use App\Feature\Ticket\Service\ValidationService;
 use App\Service\RequestDTOFactory;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
