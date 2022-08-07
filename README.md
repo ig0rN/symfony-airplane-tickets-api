@@ -1,6 +1,33 @@
 # symfony-airplane-tickets-api
 
-## Restart DB
+## Run Docker
+
+```
+
+docker network create airplane_tickets
+docker-compose up -d --force-recreate
+
+```
+
+## Login to container
+
+```
+
+docker exec -it php-api bash
+
+```
+
+## Install dependencies
+
+```
+
+composer install
+
+```
+
+
+
+## Fresh DB
 
 ```
 
