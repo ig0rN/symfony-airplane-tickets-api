@@ -2,17 +2,19 @@
 
 namespace App\EventSubscriber;
 
+use App\Exception\AppException;
 use App\Exception\ValidationException;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
 class ExceptionSubscriber implements EventSubscriberInterface
 {
     public function __construct(
-        private readonly LoggerInterface $logger,
+        private readonly LoggerInterface $apiTicketsLogger,
     ) {
     }
 
@@ -31,16 +33,38 @@ class ExceptionSubscriber implements EventSubscriberInterface
         $e = $event->getThrowable();
 
         if ($e instanceof ValidationException) {
-            $this->logger->info('Validation Exception', [
-                'Errors' => $e->getData(),
-            ]);
+            $exceptionMessage = 'Validation Exception';
 
-            $event->setResponse(new JsonResponse([
+            $responseData = [
                 'errors' => $e->getData(),
                 'message' => $e->getMessage(),
-            ], $e->getCode()));
+            ];
 
-            return;
+            $responseCode = $e->getCode();
+        } elseif ($e instanceof AppException) {
+            $exceptionMessage = 'App Exception';
+
+            $responseData = [
+                'message' => $e->getMessage(),
+            ];
+
+            $responseCode = $e->getCode();
+        } else {
+            $exceptionMessage = 'Unknown Exception';
+
+            $responseData = [
+                'message' => $e->getMessage(),
+            ];
+
+            $responseCode = Response::HTTP_INTERNAL_SERVER_ERROR;
         }
+
+        $this->apiTicketsLogger->error($exceptionMessage, [
+            'Message' => $e->getMessage(),
+            'Code' => $e->getCode(),
+            'Trance' => $e->getTrace(),
+        ]);
+
+        $event->setResponse(new JsonResponse($responseData, $responseCode));
     }
 }
