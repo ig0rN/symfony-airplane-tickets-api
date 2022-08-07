@@ -93,7 +93,7 @@ curl --location --request POST 'localhost:8080/tickets/cancel' \
 
 ```
 
-# create ticket
+# change seat
 
 ```
 
