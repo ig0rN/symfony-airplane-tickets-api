@@ -5,6 +5,7 @@ namespace App\Feature\Ticket\Service;
 use App\Entity\Flight;
 use App\Entity\Ticket;
 use App\Feature\Ticket\DTO\CreateRequest;
+use App\Feature\Ticket\Interface\ActionRequestModel;
 use App\Provider\FlightProvider;
 use App\Repository\TicketRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -18,16 +19,16 @@ class TicketFactory
     ) {
     }
 
-    public function make(CreateRequest $createRequest): Ticket
+    public function make(ActionRequestModel $requestModel): Ticket
     {
-        $flight = $this->flightProvider->getFlight($createRequest->getFlightId());
+        $flight = $this->flightProvider->getFlight($requestModel->getFlightId());
 
         $ticket = (new Ticket())
             ->setFlight($flight)
             ->setSeatNumber(
                 $this->getSeatNumber($flight)
             )
-            ->setPassport($createRequest->getPassport())
+            ->setPassport($requestModel->getPassport())
         ;
 
         $this->entityManager->persist($ticket);

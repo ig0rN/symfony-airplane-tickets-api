@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Feature\Ticket\DTO;
+namespace App\Feature\Ticket\Model;
 
 use Symfony\Component\Validator\Constraints as Assert;
 
-class CreateRequest
+class CreateRequest extends AbstractModel
 {
     /**
      * @Assert\NotBlank
