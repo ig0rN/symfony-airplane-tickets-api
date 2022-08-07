@@ -13,9 +13,9 @@ class CancelAction
     ) {
     }
 
-    public function getResponseData(string $ticketUuid): array
+    public function handleRequest(string $ticketUuid): array
     {
-        $ticket = $this->ticketProvider->getFlight($ticketUuid);
+        $ticket = $this->ticketProvider->getTicket($ticketUuid);
 
         $ticket->setCanceled(true);
 

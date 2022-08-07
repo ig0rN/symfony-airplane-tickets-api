@@ -3,9 +3,11 @@
 namespace App\Controller;
 
 use App\Feature\Ticket\Action\CancelAction;
+use App\Feature\Ticket\Action\ChangeSeatAction;
+use App\Feature\Ticket\Action\CreateAction;
+use App\Feature\Ticket\DTO\ChangeSeatRequest;
 use App\Feature\Ticket\DTO\CreateRequest;
 use App\Service\RequestDTOFactory;
-use App\Feature\Ticket\Action\CreateAction;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -30,7 +32,7 @@ class TicketController extends AbstractController
         $dto = $requestDTOFactory->make($request, CreateRequest::class);
 
         return new JsonResponse(
-            $createAction->getResponseData($dto),
+            $createAction->handleRequest($dto),
             Response::HTTP_CREATED
         );
     }
@@ -45,7 +47,26 @@ class TicketController extends AbstractController
         CancelAction $cancelAction,
     ): JsonResponse {
         return new JsonResponse(
-            $cancelAction->getResponseData($uuid),
+            $cancelAction->handleRequest($uuid),
+            Response::HTTP_OK
+        );
+    }
+
+    #[Route(
+        path: '/{uuid}/change-seat',
+        name: 'cancel',
+        methods: [Request::METHOD_PUT]
+    )]
+    public function changeSeat(
+        Request $request,
+        string $uuid,
+        RequestDTOFactory $requestDTOFactory,
+        ChangeSeatAction $changeSeatAction,
+    ): JsonResponse {
+        $dto = $requestDTOFactory->make($request, ChangeSeatRequest::class);
+
+        return new JsonResponse(
+            $changeSeatAction->handleRequest($uuid, $dto),
             Response::HTTP_OK
         );
     }

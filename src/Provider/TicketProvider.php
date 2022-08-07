@@ -16,7 +16,7 @@ class TicketProvider
     /**
      * @throws UnknownTicketException
      */
-    public function getFlight(string $flightUuid): Ticket
+    public function getTicket(string $flightUuid): Ticket
     {
         $flight = $this->ticketRepository->findOneBy(['uuid' => $flightUuid]);
 

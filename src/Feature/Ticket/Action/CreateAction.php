@@ -12,7 +12,7 @@ class CreateAction
     ) {
     }
 
-    public function getResponseData(CreateRequest $createRequest): array
+    public function handleRequest(CreateRequest $createRequest): array
     {
         $ticket = $this->ticketFactory->make($createRequest);
 
