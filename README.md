@@ -57,12 +57,12 @@ vendor/bin/php-cs-fixer fix tests --rules=@Symfony ;
 
 ## API endpoints
 
-| HTTP method | Endpoint                  | Function                              | Post Data                                                  |
-|-------------|---------------------------|---------------------------------------|------------------------------------------------------------|
-| ---         | ---                       | ---                                   | ---                                                        |
-| POST        | /tickets                  | Reserve ticket                        | 'flightId' - string/required, 'passport' - string/required |
-| GET         | /tickets/{id}/cancel      | Cancel reservation                    | /                                                          |
-| PUT         | /tickets/{id}/change-seat | Change seat number                    | 'seatNumber' - integer/required                            |
+| HTTP method | Endpoint             | Function           | Post Data                                                     |
+|-------------|----------------------|--------------------|---------------------------------------------------------------|
+| ---         | ---                  | ---                | ---                                                           |
+| POST        | /tickets/create      | Reserve ticket     | 'flightId' - string/required, 'passport' - string/required    |
+| POST        | /tickets/cancel      | Cancel reservation | 'ticketId' - string/required                                  |
+| POST        | /tickets/change-seat | Change seat number | 'ticketId' - string/required, 'seatNumber' - integer/required |
 
 ## cURL
 
@@ -70,11 +70,11 @@ vendor/bin/php-cs-fixer fix tests --rules=@Symfony ;
 
 ```
 
-curl --location --request POST 'localhost:8080/tickets' \
+curl --location --request POST 'localhost:8080/tickets/create' \
 --header 'Authorization: Bearer s3cr3tV@lu3' \
 --header 'Content-Type: application/json' \
 --data-raw '{
-    "flightId": "899f44ee-15fe-11ed-883c-0242ac1300033",
+    "flightId": "899f44ee-15fe-11ed-883c-0242ac130003",
     "passport": "test"
 }'
 
@@ -84,10 +84,12 @@ curl --location --request POST 'localhost:8080/tickets' \
 
 ```
 
-curl --location --request GET 'localhost:8080/tickets/dde3a914-15fe-11ed-bebb-0242ac130003/cancel' \
+curl --location --request POST 'localhost:8080/tickets/cancel' \
 --header 'Authorization: Bearer s3cr3tV@lu3' \
 --header 'Content-Type: application/json' \
---data-raw ''
+--data-raw '{
+    "ticketId": "dde3a914-15fe-11ed-bebb-0242ac130003"
+}'
 
 ```
 
@@ -95,11 +97,12 @@ curl --location --request GET 'localhost:8080/tickets/dde3a914-15fe-11ed-bebb-02
 
 ```
 
-curl --location --request PUT 'localhost:8080/tickets/dde3a914-15fe-11ed-bebb-0242ac130003/change-seat' \
+curl --location --request POST 'localhost:8080/tickets/change-seat' \
 --header 'Authorization: Bearer s3cr3tV@lu3' \
 --header 'Content-Type: application/json' \
 --data-raw '{
-    "seatNumber": 55
+    "ticketId": "dde3a914-15fe-11ed-bebb-0242ac130003",
+    "seatNumber": 34
 }'
 
 ```
