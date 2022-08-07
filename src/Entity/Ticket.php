@@ -28,6 +28,9 @@ class Ticket
     #[ORM\Column(length: 20)]
     private ?string $passport = null;
 
+    #[ORM\Column]
+    private bool $canceled = false;
+
     public function __construct()
     {
         $this->uuid = Uuid::uuid1();
@@ -75,6 +78,18 @@ class Ticket
     public function setPassport(string $passport): self
     {
         $this->passport = $passport;
+
+        return $this;
+    }
+
+    public function isCanceled(): ?bool
+    {
+        return $this->canceled;
+    }
+
+    public function setCanceled(bool $canceled): self
+    {
+        $this->canceled = $canceled;
 
         return $this;
     }

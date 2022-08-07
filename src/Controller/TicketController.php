@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Feature\Ticket\Action\CancelAction;
 use App\Feature\Ticket\DTO\CreateRequest;
 use App\Service\RequestDTOFactory;
 use App\Feature\Ticket\Action\CreateAction;
@@ -31,6 +32,21 @@ class TicketController extends AbstractController
         return new JsonResponse(
             $createAction->getResponseData($dto),
             Response::HTTP_CREATED
+        );
+    }
+
+    #[Route(
+        path: '/{uuid}/cancel',
+        name: 'cancel',
+        methods: [Request::METHOD_GET]
+    )]
+    public function cancel(
+        string $uuid,
+        CancelAction $cancelAction,
+    ): JsonResponse {
+        return new JsonResponse(
+            $cancelAction->getResponseData($uuid),
+            Response::HTTP_OK
         );
     }
 }

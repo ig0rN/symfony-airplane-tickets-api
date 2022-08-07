@@ -45,6 +45,7 @@ class TicketRepository extends ServiceEntityRepository
         $data = $this->createQueryBuilder('t')
             ->select('t.seatNumber')
             ->andWhere('t.flight = :flight')
+            ->andWhere('t.canceled = false')
             ->setParameter('flight', $flight)
             ->getQuery()
             ->getArrayResult()
