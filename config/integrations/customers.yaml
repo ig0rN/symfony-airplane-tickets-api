@@ -1,0 +1,3 @@
+parameters:
+    customers:
+        customer1Key: '%env(resolve:CUSTOMER_1_KEY)%'

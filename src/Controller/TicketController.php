@@ -7,10 +7,11 @@ use App\Feature\Ticket\Action\ChangeSeatAction;
 use App\Feature\Ticket\Action\CreateAction;
 use App\Feature\Ticket\DTO\ChangeSeatRequest;
 use App\Feature\Ticket\DTO\CreateRequest;
+use App\Feature\Ticket\Service\ValidationService;
 use App\Service\RequestDTOFactory;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -18,7 +19,7 @@ use Symfony\Component\Routing\Annotation\Route;
     path: '/tickets',
     name: 'tickets_'
 )]
-class TicketController extends AbstractController
+class TicketController
 {
     #[Route(
         name: 'create',
@@ -54,7 +55,7 @@ class TicketController extends AbstractController
 
     #[Route(
         path: '/{uuid}/change-seat',
-        name: 'cancel',
+        name: 'change-seat',
         methods: [Request::METHOD_PUT]
     )]
     public function changeSeat(
