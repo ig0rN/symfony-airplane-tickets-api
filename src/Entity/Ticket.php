@@ -19,14 +19,14 @@ class Ticket
     #[ORM\JoinColumn(nullable: false)]
     private ?Flight $flight = null;
 
-    #[ORM\Column(length: 36)]
+    #[ORM\Column(length: 36, unique: true)]
     private string $uuid;
 
     #[ORM\Column(type: Types::SMALLINT)]
     private ?int $seatNumber = null;
 
     #[ORM\Column(length: 20)]
-    private ?string $passportId = null;
+    private ?string $passport = null;
 
     public function __construct()
     {
@@ -67,14 +67,14 @@ class Ticket
         return $this;
     }
 
-    public function getPassportId(): ?string
+    public function getPassport(): ?string
     {
-        return $this->passportId;
+        return $this->passport;
     }
 
-    public function setPassportId(string $passportId): self
+    public function setPassport(string $passport): self
     {
-        $this->passportId = $passportId;
+        $this->passport = $passport;
 
         return $this;
     }

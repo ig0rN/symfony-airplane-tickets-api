@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\Flight;
 use App\Entity\Ticket;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -37,6 +38,19 @@ class TicketRepository extends ServiceEntityRepository
         if ($flush) {
             $this->getEntityManager()->flush();
         }
+    }
+
+    public function getReservedSeats(Flight $flight): array
+    {
+        $data = $this->createQueryBuilder('t')
+            ->select('t.seatNumber')
+            ->andWhere('t.flight = :flight')
+            ->setParameter('flight', $flight)
+            ->getQuery()
+            ->getArrayResult()
+        ;
+
+        return array_column($data, 'seatNumber');
     }
 
 //    /**

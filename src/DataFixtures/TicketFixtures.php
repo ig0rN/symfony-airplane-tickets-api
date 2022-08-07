@@ -22,7 +22,7 @@ class TicketFixtures extends Fixture implements DependentFixtureInterface
         foreach ($this->data as $ticket) {
             $t = (new Ticket())
                 ->setFlight($this->getReference($ticket['flight-ref']))
-                ->setPassportId($ticket['passport-id'])
+                ->setPassport($ticket['passport-id'])
                 ->setSeatNumber($ticket['seat-number'])
             ;
 
