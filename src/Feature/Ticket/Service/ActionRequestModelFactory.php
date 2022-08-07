@@ -3,7 +3,6 @@
 namespace App\Feature\Ticket\Service;
 
 use App\Feature\Ticket\Enum\Action;
-use App\Feature\Ticket\Exception\UnavailableActionException;
 use App\Feature\Ticket\Interface\ActionRequestModel;
 use App\Feature\Ticket\Model\CancelRequest;
 use App\Feature\Ticket\Model\ChangeSeatRequest;
@@ -29,11 +28,7 @@ class ActionRequestModelFactory
 
     public function make(Request $request, string $action): ActionRequestModel
     {
-        try {
-            $actionEnum = Action::from($action);
-        } catch (\Throwable) {
-            throw new UnavailableActionException(sprintf('Non existing HTTP action: [%s]', $action));
-        }
+        $actionEnum = Action::from($action);
 
         $class = self::MAP()[$actionEnum->value];
 
