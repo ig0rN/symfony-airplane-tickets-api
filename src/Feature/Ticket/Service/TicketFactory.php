@@ -4,6 +4,7 @@ namespace App\Feature\Ticket\Service;
 
 use App\Entity\Flight;
 use App\Entity\Ticket;
+use App\Exception\Flight\FullyBookedFlightException;
 use App\Feature\Ticket\DTO\CreateRequest;
 use App\Feature\Ticket\Interface\ActionRequestModel;
 use App\Provider\FlightProvider;
@@ -37,9 +38,16 @@ class TicketFactory
         return $ticket;
     }
 
+    /**
+     * @throws FullyBookedFlightException
+     */
     private function getSeatNumber(Flight $flight): int
     {
         $reservedSeats = $this->ticketRepository->getReservedSeats($flight);
+
+        if (count($reservedSeats) >= $flight->getAircraft()->getSeatNumber()) {
+            throw new FullyBookedFlightException(sprintf('Flight with ID: [%s] is fully booked.', $flight->getUuid()));
+        }
 
         do {
             $seatNumber = mt_rand(1, $flight->getAircraft()->getSeatNumber());
