@@ -4,12 +4,13 @@ namespace App\Feature\Ticket\Action;
 
 use App\Entity\Flight;
 use App\Exception\Ticket\UnavailableSeatException;
-use App\Feature\Ticket\DTO\ChangeSeatRequest;
+use App\Feature\Ticket\Interface\ActionInterface;
+use App\Feature\Ticket\Interface\ActionRequestModel;
 use App\Provider\TicketProvider;
 use App\Repository\TicketRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
-class ChangeSeatAction
+class ChangeSeatAction implements ActionInterface
 {
     public function __construct(
         private readonly TicketProvider $ticketProvider,
@@ -18,13 +19,13 @@ class ChangeSeatAction
     ) {
     }
 
-    public function handleRequest(string $ticketUuid, ChangeSeatRequest $changeSeatRequest): array
+    public function getResponseFromAction(ActionRequestModel $requestModel): array
     {
-        $ticket = $this->ticketProvider->getTicket($ticketUuid);
+        $ticket = $this->ticketProvider->getTicket($requestModel->getTicketId());
 
-        $this->checkSeatNumber($ticket->getFlight(), $changeSeatRequest);
+        $this->checkSeatNumber($ticket->getFlight(), $requestModel);
 
-        $ticket->setSeatNumber($changeSeatRequest->getSeatNumber());
+        $ticket->setSeatNumber($requestModel->getSeatNumber());
 
         $this->entityManager->flush();
 
@@ -36,17 +37,28 @@ class ChangeSeatAction
     /**
      * @throws UnavailableSeatException
      */
-    private function checkSeatNumber(Flight $flight, ChangeSeatRequest $changeSeatRequest): void
+    private function checkSeatNumber(Flight $flight, ActionRequestModel $requestModel): void
     {
+        $chosenSeatNumber = $requestModel->getSeatNumber();
+
+        if ($chosenSeatNumber < 1 || $chosenSeatNumber > $flight->getAircraft()->getSeatNumber()) {
+            $message = sprintf(
+                'You can pick seats with number that is in range: [%s = %s]',
+                1, $flight->getAircraft()->getSeatNumber()
+            );
+
+            throw new UnavailableSeatException($message);
+        }
+
         $ticket = $this->ticketRepository->findOneBy([
             'flight' => $flight,
-            'seatNumber' => $changeSeatRequest->getSeatNumber(),
+            'seatNumber' => $requestModel->getSeatNumber(),
         ]);
 
         if (null === $ticket) {
             return;
         }
 
-        throw new UnavailableSeatException(sprintf('Seat with number: [%s] is already taken', $changeSeatRequest->getSeatNumber()));
+        throw new UnavailableSeatException(sprintf('Seat with number: [%s] is already taken', $requestModel->getSeatNumber()));
     }
 }

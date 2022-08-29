@@ -2,10 +2,12 @@
 
 namespace App\Feature\Ticket\Action;
 
+use App\Feature\Ticket\Interface\ActionInterface;
+use App\Feature\Ticket\Interface\ActionRequestModel;
 use App\Provider\TicketProvider;
 use Doctrine\ORM\EntityManagerInterface;
 
-class CancelAction
+class CancelAction implements ActionInterface
 {
     public function __construct(
         private readonly TicketProvider $ticketProvider,
@@ -13,9 +15,9 @@ class CancelAction
     ) {
     }
 
-    public function handleRequest(string $ticketUuid): array
+    public function getResponseFromAction(ActionRequestModel $requestModel): array
     {
-        $ticket = $this->ticketProvider->getTicket($ticketUuid);
+        $ticket = $this->ticketProvider->getTicket($requestModel->getTicketId());
 
         $ticket->setCanceled(true);
 

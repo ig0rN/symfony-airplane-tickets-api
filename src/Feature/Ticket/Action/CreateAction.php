@@ -3,18 +3,20 @@
 namespace App\Feature\Ticket\Action;
 
 use App\Feature\Ticket\DTO\CreateRequest;
+use App\Feature\Ticket\Interface\ActionInterface;
+use App\Feature\Ticket\Interface\ActionRequestModel;
 use App\Feature\Ticket\Service\TicketFactory;
 
-class CreateAction
+class CreateAction implements ActionInterface
 {
     public function __construct(
         private readonly TicketFactory $ticketFactory,
     ) {
     }
 
-    public function handleRequest(CreateRequest $createRequest): array
+    public function getResponseFromAction(ActionRequestModel $requestModel): array
     {
-        $ticket = $this->ticketFactory->make($createRequest);
+        $ticket = $this->ticketFactory->make($requestModel);
 
         $flight = $ticket->getFlight();
 
